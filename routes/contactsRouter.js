@@ -1,7 +1,13 @@
 import express from "express";
+import usersControllers from "../controllers/usersControllers.js";
 import contactsController from "../controllers/contactsControllers.js";
 import validateBody from "../helpers/validateBody.js";
+import { createUserSchema } from "../schemas/usersSchemas.js";
 import { createContactSchema, updateContactSchema, updateStatusContactSchema } from "../schemas/contactsSchemas.js";
+
+const usersRouter = express.Router();
+
+usersRouter.post("/auth/register", validateBody(createUserSchema), usersControllers.createUser);
 
 const contactsRouter = express.Router();
 
