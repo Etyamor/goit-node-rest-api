@@ -1,4 +1,4 @@
-import usersService from "../services/usersServices.js";
+import usersService from "../services/userService.js";
 import HttpError from "../helpers/HttpError.js";
 import { ctrlWrapper } from "../helpers/ctrlWrapper.js";
 
