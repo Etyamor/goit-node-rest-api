@@ -33,7 +33,19 @@ const loginUser = async (req, res, next) => {
   });
 }
 
+const logoutUser = async (req, res) => {
+  await usersService.logoutUser(req.user);
+  res.status(204).end();
+};
+
+const getCurrentUser = async (req, res) => {
+  const { email, subscription } = req.user;
+  res.json({ email, subscription });
+};
+
 export default {
   createUser: ctrlWrapper(createUser),
   loginUser: ctrlWrapper(loginUser),
+  logoutUser: ctrlWrapper(logoutUser),
+  getCurrentUser: ctrlWrapper(getCurrentUser),
 };

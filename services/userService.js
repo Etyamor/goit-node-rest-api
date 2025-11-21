@@ -25,6 +25,11 @@ async function addUser(email, password) {
   return { user: { email: user.email, subscription: user.subscription } };
 }
 
+async function logoutUser(user) {
+  user.token = null;
+  await user.save();
+}
+
 export default {
-  getUserByEmail, isPasswordValid, createUserToken, addUser,
+  getUserByEmail, isPasswordValid, createUserToken, addUser, logoutUser,
 };

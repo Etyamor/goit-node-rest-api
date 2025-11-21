@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import passport from "./config/passport.js";
 
 import userRouter from "./routes/userRouter.js";
 import contactRouter from "./routes/contactRouter.js";
@@ -12,6 +13,7 @@ const app = express();
 app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
+app.use(passport.initialize());
 
 app.use("/api/auth", userRouter);
 app.use("/api/contacts", contactRouter);
