@@ -14,6 +14,26 @@ const createUser = async (req, res, next) => {
   res.status(201).json(newUser);
 };
 
+const loginUser = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  const user = await usersService.getUserByEmail(email);
+  if (!user || !(await usersService.isPasswordValid(user, password))) {
+    return next(HttpError(401, "Email or password is wrong"));
+  }
+
+  const token = await usersService.createUserToken(user);
+
+  res.json({
+    token: token,
+    user: {
+      email: user.email,
+      subscription: user.subscription,
+    },
+  });
+}
+
 export default {
   createUser: ctrlWrapper(createUser),
+  loginUser: ctrlWrapper(loginUser),
 };

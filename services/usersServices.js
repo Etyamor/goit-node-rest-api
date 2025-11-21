@@ -1,8 +1,20 @@
 import User from '../models/user.js';
 import bcrypt from 'bcrypt';
+import jwt from "jsonwebtoken";
 
 async function getUserByEmail(email) {
   return await User.findOne({ where: { email: email } });
+}
+
+async function isPasswordValid(user, password) {
+  return await bcrypt.compare(password, user.password);
+}
+
+async function createUserToken(user) {
+  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+  user.token = token;
+  await user.save();
+  return token;
 }
 
 async function addUser(email, password) {
@@ -14,5 +26,5 @@ async function addUser(email, password) {
 }
 
 export default {
-  getUserByEmail, addUser,
+  getUserByEmail, isPasswordValid, createUserToken, addUser,
 };
