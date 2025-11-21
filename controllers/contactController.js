@@ -3,7 +3,7 @@ import HttpError from "../helpers/HttpError.js";
 import { ctrlWrapper } from "../helpers/ctrlWrapper.js";
 
 const getAllContacts = async (req, res) => {
-  const contacts = await contactsService.listContacts();
+  const contacts = await contactsService.listContacts(req.user.id);
   res.json(contacts);
 };
 
@@ -14,7 +14,7 @@ const getOneContact = async (req, res, next) => {
     return next(HttpError(400));
   }
 
-  const contact = await contactsService.getContactById(id);
+  const contact = await contactsService.getContactById(id, req.user.id);
   if (!contact) {
     return next(HttpError(404));
   }
@@ -29,7 +29,7 @@ const deleteContact = async (req, res, next) => {
     return next(HttpError(400));
   }
 
-  const deletedContact = await contactsService.removeContact(id);
+  const deletedContact = await contactsService.removeContact(id, req.user.id);
   if (!deletedContact) {
     return next(HttpError(404));
   }
@@ -39,7 +39,7 @@ const deleteContact = async (req, res, next) => {
 const createContact = async (req, res) => {
   const { name, email, phone } = req.body;
 
-  const newContact = await contactsService.addContact(name, email, phone);
+  const newContact = await contactsService.addContact(name, email, phone, req.user.id);
   res.status(201).json(newContact);
 };
 
@@ -50,7 +50,7 @@ const updateContact = async (req, res, next) => {
     return next(HttpError(400));
   }
 
-  const updatedContact = await contactsService.updateContact(id, req.body);
+  const updatedContact = await contactsService.updateContact(id, req.user.id, req.body);
   if (!updatedContact) {
     return next(HttpError(404));
   }

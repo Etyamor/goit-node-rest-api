@@ -1,23 +1,24 @@
 import Contact from '../models/Contact.js';
 
-async function listContacts() {
-  return await Contact.findAll();
+async function listContacts(userId) {
+  return await Contact.findAll({ where: { owner: userId } });
 }
 
-async function getContactById(contactId) {
-  return await Contact.findByPk(contactId);
+async function getContactById(contactId, userId) {
+  return await Contact.findOne({ where: { id: contactId, owner: userId } });
 }
 
-async function addContact(name, email, phone) {
+async function addContact(name, email, phone, userId) {
   return await Contact.create({
     name,
     email,
     phone,
+    owner: userId,
   });
 }
 
-async function removeContact(contactId) {
-  const contact = await Contact.findByPk(contactId);
+async function removeContact(contactId, userId) {
+  const contact = await Contact.findOne({ where: { id: contactId, owner: userId } });
   if (!contact) {
     return null;
   }
@@ -25,8 +26,8 @@ async function removeContact(contactId) {
   return contact;
 }
 
-async function updateContact(contactId, updatedFields) {
-  const contact = await Contact.findByPk(contactId);
+async function updateContact(contactId, userId, updatedFields) {
+  const contact = await Contact.findOne({ where: { id: contactId, owner: userId } });
   if (!contact) {
     return null;
   }
