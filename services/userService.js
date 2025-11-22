@@ -30,6 +30,16 @@ async function logoutUser(user) {
   await user.save();
 }
 
+async function updateUserSubscription(userId, subscription) {
+  const user = await User.findByPk(userId);
+  if (!user) {
+    return null;
+  }
+  user.subscription = subscription;
+  await user.save();
+  return { email: user.email, subscription: user.subscription };
+}
+
 export default {
-  getUserByEmail, isPasswordValid, createUserToken, addUser, logoutUser,
+  getUserByEmail, isPasswordValid, createUserToken, addUser, logoutUser, updateUserSubscription
 };
