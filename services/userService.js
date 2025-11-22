@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
+import gravatar from 'gravatar';
 
 async function getUserByEmail(email) {
   return await User.findOne({ where: { email: email } });
@@ -19,10 +20,15 @@ async function createUserToken(user) {
 
 async function addUser(email, password) {
   const hashedPassword = await bcrypt.hash(password, 10);
+  const avatarURL = gravatar.url(email, { s: '250', d: 'retro' }, true);
+
   const user = await User.create({
-    email, password: hashedPassword,
+    email,
+    password: hashedPassword,
+    avatarURL,
   });
-  return { user: { email: user.email, subscription: user.subscription } };
+
+  return { user: { email: user.email, subscription: user.subscription, avatarURL: user.avatarURL } };
 }
 
 async function logoutUser(user) {

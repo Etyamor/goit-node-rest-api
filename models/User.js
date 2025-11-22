@@ -20,6 +20,7 @@ const User = sequelize.define('user', {
     type: DataTypes.STRING,
     defaultValue: null,
   },
+  avatarURL: DataTypes.STRING,
 }, {
   tableName: "users", timestamps: false,
 });
