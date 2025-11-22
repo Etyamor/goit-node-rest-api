@@ -23,9 +23,13 @@ export const connectDB = async () => {
     await sequelize.authenticate();
     console.log('Database connection has been established successfully.');
 
-    await import('../models/contact.js');
-    await sequelize.sync({ alter: false });
-    console.log('Database schema synchronized successfully.');
+    // const User = (await import('../models/user.js')).default;
+    // await User.sync({ alter: false })
+    //
+    // const Contact = (await import('../models/contact.js')).default;
+    // await Contact.sync({ alter: false });
+    //
+    // console.log('Database schema synchronized successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
     process.exit(1);
