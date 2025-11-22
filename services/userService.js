@@ -46,6 +46,16 @@ async function updateUserSubscription(userId, subscription) {
   return { email: user.email, subscription: user.subscription };
 }
 
+async function updateUserAvatar(userId, avatarURL) {
+  const user = await User.findByPk(userId);
+  if (!user) {
+    return null;
+  }
+  user.avatarURL = avatarURL;
+  await user.save();
+  return user;
+}
+
 export default {
-  getUserByEmail, isPasswordValid, createUserToken, addUser, logoutUser, updateUserSubscription
+  getUserByEmail, isPasswordValid, createUserToken, addUser, logoutUser, updateUserSubscription, updateUserAvatar
 };
