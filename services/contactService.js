@@ -1,7 +1,19 @@
 import Contact from '../models/Contact.js';
 
-async function listContacts(userId) {
-  return await Contact.findAll({ where: { owner: userId } });
+async function listContacts(userId, filter = {}, page = 1, limit = 20) {
+  const where = { owner: userId };
+
+  if (filter.favorite !== undefined) {
+    where.favorite = filter.favorite;
+  }
+
+  const offset = (page - 1) * limit;
+
+  return await Contact.findAll({
+    where,
+    limit,
+    offset
+  });
 }
 
 async function getContactById(contactId, userId) {

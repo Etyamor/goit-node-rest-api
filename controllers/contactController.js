@@ -3,7 +3,17 @@ import HttpError from "../helpers/HttpError.js";
 import { ctrlWrapper } from "../helpers/ctrlWrapper.js";
 
 const getAllContacts = async (req, res) => {
-  const contacts = await contactsService.listContacts(req.user.id);
+  const filter = {};
+
+  if (req.query.favorite !== undefined) {
+    filter.favorite = req.query.favorite === 'true';
+  }
+
+  // Pagination parameters
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 20;
+
+  const contacts = await contactsService.listContacts(req.user.id, filter, page, limit);
   res.json(contacts);
 };
 
