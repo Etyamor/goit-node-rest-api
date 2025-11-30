@@ -1,6 +1,8 @@
 import usersService from "../services/userService.js";
 import HttpError from "../helpers/HttpError.js";
 import { ctrlWrapper } from "../helpers/ctrlWrapper.js";
+import path from "path";
+import * as fs from "node:fs/promises";
 
 const createUser = async (req, res, next) => {
   const { email, password } = req.body;
@@ -49,10 +51,32 @@ const updateSubscription = async (req, res) => {
   res.json({updatedUser});
 }
 
+const updateAvatar = async (req, res, next) => {
+  if (!req.file) {
+    return next(HttpError(400, "No file uploaded"));
+  }
+
+  const { path: tempPath, originalname } = req.file;
+  const extension = path.extname(originalname);
+  const filename = `${req.user.id}${extension}`;
+  const avatarPath = path.join(process.cwd(), 'public', 'avatars', filename);
+
+  try {
+    await fs.rename(tempPath, avatarPath);
+    const avatarURL = `/avatars/${filename}`;
+    const updatedUser = await usersService.updateUserAvatar(req.user.id, avatarURL);
+    res.json({ avatarURL: updatedUser.avatarURL });
+  } catch (error) {
+    await fs.unlink(tempPath).catch(() => {});
+    throw error;
+  }
+};
+
 export default {
   createUser: ctrlWrapper(createUser),
   loginUser: ctrlWrapper(loginUser),
   logoutUser: ctrlWrapper(logoutUser),
   getCurrentUser: ctrlWrapper(getCurrentUser),
   updateSubscription: ctrlWrapper(updateSubscription),
+  updateAvatar: ctrlWrapper(updateAvatar),
 };
