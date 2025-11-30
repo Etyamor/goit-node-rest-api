@@ -15,8 +15,8 @@ const transporter = nodemailer.createTransport(config);
 
 // Test email sending
 // const emailOptions = {
-//   from: 'maxikrud0071@ukr.net',
-//   to: 'maxikrud0071@gmail.com',
+//   from: process.env.SMTP_USER,
+//   to: 'example@gmail.com',
 //   subject: 'Nodemailer test',
 //   text: 'Привіт. Ми тестуємо надсилання листів!',
 // };

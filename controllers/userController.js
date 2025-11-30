@@ -4,6 +4,7 @@ import { ctrlWrapper } from "../helpers/ctrlWrapper.js";
 import path from "path";
 import * as fs from "node:fs/promises";
 import { transporter } from "../services/mailService.js";
+import 'dotenv/config';
 
 const createUser = async (req, res, next) => {
   const { email, password } = req.body;
@@ -20,7 +21,7 @@ const createUser = async (req, res, next) => {
 
   try {
     await transporter.sendMail({
-      from: "maxikrud0071@ukr.net",
+      from: process.env.SMTP_USER,
       to: email,
       subject: 'Verify your email',
       html: `<p>Welcome! Please verify your email by clicking the link below:</p><p><a href="${verifyLink}">Verify Email</a></p>`,
@@ -110,7 +111,6 @@ const resendVerificationEmail = async (req, res) => {
 
   const user = await usersService.getUserByEmail(email);
   if (!user) {
-    // Don’t reveal whether the email exists; respond success-like to avoid enumeration.
     return res.status(200).json({ message: "If the account exists and is not verified, a verification email has been sent." });
   }
 
@@ -129,7 +129,7 @@ const resendVerificationEmail = async (req, res) => {
 
   try {
     await transporter.sendMail({
-      from: "maxikrud0071@ukr.net",
+      from: process.env.SMTP_USER,
       to: email,
       subject: 'Verify your email',
       html: `<p>Please verify your email by clicking the link below:</p><p><a href="${verifyLink}">Verify Email</a></p>`,
