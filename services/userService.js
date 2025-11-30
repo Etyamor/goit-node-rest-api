@@ -2,9 +2,14 @@ import User from '../models/User.js';
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import gravatar from 'gravatar';
+import { nanoid } from 'nanoid';
 
 async function getUserByEmail(email) {
   return await User.findOne({ where: { email: email } });
+}
+
+async function getUserByVerificationToken(verificationToken) {
+  return await User.findOne({ where: { verificationToken } });
 }
 
 async function isPasswordValid(user, password) {
@@ -21,14 +26,17 @@ async function createUserToken(user) {
 async function addUser(email, password) {
   const hashedPassword = await bcrypt.hash(password, 10);
   const avatarURL = gravatar.url(email, { s: '250', d: 'retro' }, true);
+  const verificationToken = nanoid();
 
   const user = await User.create({
     email,
     password: hashedPassword,
     avatarURL,
+    verificationToken,
+    verify: false,
   });
 
-  return { user: { email: user.email, subscription: user.subscription, avatarURL: user.avatarURL } };
+  return { user: { email: user.email, subscription: user.subscription, avatarURL: user.avatarURL }, verificationToken }; // expose token so it can be emailed
 }
 
 async function logoutUser(user) {
@@ -56,6 +64,23 @@ async function updateUserAvatar(userId, avatarURL) {
   return user;
 }
 
+async function verifyUserByToken(verificationToken) {
+  const user = await getUserByVerificationToken(verificationToken);
+  if (!user) return null;
+  user.verify = true;
+  user.verificationToken = null;
+  await user.save();
+  return user;
+}
+
 export default {
-  getUserByEmail, isPasswordValid, createUserToken, addUser, logoutUser, updateUserSubscription, updateUserAvatar
+  getUserByEmail,
+  getUserByVerificationToken,
+  isPasswordValid,
+  createUserToken,
+  addUser,
+  logoutUser,
+  updateUserSubscription,
+  updateUserAvatar,
+  verifyUserByToken,
 };

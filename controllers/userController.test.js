@@ -52,6 +52,7 @@ describe("loginUser controller", () => {
       email: "test@example.com",
       subscription: "starter",
       password: "hashedPassword",
+      verify: true,
     };
 
     const mockToken = "mock.jwt.token";
@@ -78,6 +79,7 @@ describe("loginUser controller", () => {
       email: "test@example.com",
       subscription: "starter",
       password: "hashedPassword",
+      verify: true,
     };
 
     const mockToken = "mock.jwt.token";
@@ -100,6 +102,7 @@ describe("loginUser controller", () => {
       email: "test@example.com",
       subscription: "starter",
       password: "hashedPassword",
+      verify: true,
     };
 
     const mockToken = "mock.jwt.token";
@@ -122,4 +125,3 @@ describe("loginUser controller", () => {
     expect(responseData.user.subscription).toBe(mockUser.subscription);
   });
 });
-

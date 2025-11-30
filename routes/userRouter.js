@@ -1,11 +1,15 @@
 import express from "express";
 import userController from "../controllers/userController.js";
 import validateBody from "../helpers/validateBody.js";
-import { createUserSchema, updateSubscriptionSchema } from "../schemas/userSchema.js";
+import { createUserSchema, updateSubscriptionSchema, verifyEmailSchema } from "../schemas/userSchema.js";
 import authenticate from "../middleware/authenticate.js";
 import upload from "../middleware/upload.js";
 
 const userRouter = express.Router();
+
+userRouter.get("/verify/:verificationToken", userController.verifyUser);
+
+userRouter.post("/verify", validateBody(verifyEmailSchema), userController.resendVerificationEmail);
 
 userRouter.post("/register", validateBody(createUserSchema), userController.createUser);
 
